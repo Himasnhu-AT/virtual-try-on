@@ -1,7 +1,6 @@
-import sys
-sys.path.append('./')
-from PIL import Image
 import gradio as gr
+import spaces
+from PIL import Image
 from src.tryon_pipeline import StableDiffusionXLInpaintPipeline as TryonPipeline
 from src.unet_hacked_garmnet import UNet2DConditionModel as UNet2DConditionModel_ref
 from src.unet_hacked_tryon import UNet2DConditionModel
@@ -26,7 +25,6 @@ from preprocess.openpose.run_openpose import OpenPose
 from detectron2.data.detection_utils import convert_PIL_to_numpy,_apply_exif_orientation
 from torchvision.transforms.functional import to_pil_image
 
-device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
 
 def pil_to_binary_mask(pil_image, threshold=0):
     np_image = np.array(pil_image)
@@ -123,7 +121,9 @@ pipe = TryonPipeline.from_pretrained(
 )
 pipe.unet_encoder = UNet_Encoder
 
+@spaces.GPU
 def start_tryon(dict,garm_img,garment_des,is_checked,is_checked_crop,denoise_steps,seed):
+    device = "cuda"
     
     openpose_model.preprocessor.body_estimation.model.to(device)
     pipe.to(device)
@@ -258,10 +258,10 @@ for ex_human in human_list_path:
 ##default human
 
 
-image_blocks = gr.Blocks().queue()
+image_blocks = gr.Blocks(theme="Nymbo/Alyx_Theme").queue()
 with image_blocks as demo:
-    gr.Markdown("## IDM-VTON 👕👔👚")
-    gr.Markdown("Virtual Try-on with your image and garment image. Check out the [source codes](https://github.com/yisol/IDM-VTON) and the [model](https://huggingface.co/yisol/IDM-VTON)")
+    gr.HTML("<center><h1>Virtual Try-On</h1></center>")
+    gr.HTML("<center><p>Upload an image of a person and an image of a garment ✨</p></center>")
     with gr.Row():
         with gr.Column():
             imgs = gr.ImageEditor(sources='upload', type="pil", label='Human. Mask with pen or use auto-masking', interactive=True)
@@ -309,5 +309,4 @@ with image_blocks as demo:
             
 
 
-image_blocks.launch(share=True)
-
+image_blocks.launch()

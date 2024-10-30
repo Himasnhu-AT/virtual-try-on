@@ -5,8 +5,9 @@ colorFrom: blue
 colorTo: purple
 sdk: gradio
 sdk_version: "4.24.0"
-app_file: gradio_demo/app.py
+app_file: app.py
 pinned: false
+short_description: Virtual Try-on
 ---
 
 # Virtual Try-On Demo
@@ -18,5 +19,5 @@ This application is a Virtual Try-On model demonstration powered by Gradio. It a
 To start the app locally, use the following command:
 
 ```bash
-python gradio_demo/app.py
+python app.py
 ```
